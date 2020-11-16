@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace EmployeePayroll_Using_Threads
 {
@@ -129,5 +130,57 @@ namespace EmployeePayroll_Using_Threads
             Console.WriteLine("Multiple employees added to database succesfully!");
             return count;
         }
+
+        // Add multiple employees to database using threads
+        public int AddMultipleEmployeesUsingThread(List<EmployeeModel> empList)
+        {
+            int count = 0;
+            empList.ForEach(employee =>
+            {
+                count++;
+                Task thread = new Task(() =>
+                {
+                    Console.WriteLine("Employee being added: " + employee.EmployeeName);
+                    AddEmployee(employee);
+                    Console.WriteLine("Employee added: " + employee.EmployeeName);
+                }
+                );
+                thread.Start();
+            }
+            );
+            return count;
+        }
+
+        public void addEmployeeToList(EmployeeModel emp)
+        {
+            employeePayrollDetailsList.Add(emp);
+        }
+
+        public void addMultipleEmployeeToList(List<EmployeeModel> employeePayrollDetailsList)
+        {
+            employeePayrollDetailsList.ForEach(employeeData =>
+            {
+                Console.WriteLine("Employee being added: " + employeeData.EmployeeName);
+                addEmployeeToList(employeeData);
+                Console.WriteLine("Employee added: " + employeeData.EmployeeName);
+            });
+            Console.WriteLine(this.employeePayrollDetailsList.ToString());
+        }
+
+        public void addMultipleEmployeeToListWithThread(List<EmployeeModel> employeePayrollDetailsList)
+        {
+            employeePayrollDetailsList.ForEach(employeeData =>
+            {
+                Task thread = new Task(() =>
+                {
+                    Console.WriteLine("Employee being added: " + employeeData.EmployeeName);
+                    this.addEmployeeToList(employeeData);
+                    Console.WriteLine("Employee added: " + employeeData.EmployeeName);
+                });
+                thread.Start();
+            });
+            Console.WriteLine(this.employeePayrollDetailsList.Count);
+        }
     }
 }
+

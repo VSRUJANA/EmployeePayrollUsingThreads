@@ -6,9 +6,6 @@ namespace EmployeePayroll_Using_Threads
 {
     public class EmployeeModel
     {
-        private string city;
-        private string country;
-
         public int EmployeeID { get; set; }
         public string EmployeeName { get; set; }
         public char Gender { get; set; }
